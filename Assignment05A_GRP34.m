@@ -10,7 +10,7 @@ n=size(x,2);
 s=diff(x);
 check_a=(isnumeric(x) & isnumeric(y));
 check_b=(n==size(y,2));
-% Due to probably computing errors, the step size is not exactly equal
+% Due to probably computing errors, the step size is never exactly equal
 check_c=range(s)<=10^(-14); 
 if (check_a & check_b) & check_c
     if mod(n,2)
@@ -39,7 +39,7 @@ if sts(end) == x(end)
     sts=sts(1:end-1); % neccessary due to circshift
 end
 Z=arrayfun(@(z) fzero(funh,z),sts);
-plot(Z,0*Z,'o','markersize',10)
+plot(Z,0*Z,'o','markersize',10);
 
 % This barycenter-algorithm only works well for big n:
 secx=x(find(x==sts(3))+1:find(x==sts(4))+1);
