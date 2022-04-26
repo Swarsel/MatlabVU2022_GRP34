@@ -1,9 +1,11 @@
-% UNFINISHED VERSION, PLEASE DO NOT SUBMIT YET
 preamble
-myfun=@(X) (sin(X.^2).*exp(-X/5));
-sp=@(X, Y) (X(sign(circshift(Y,-1)) ~= sign(Y)));
-
-[area, zeros] = AreaZeros(1, 4.5, 10003, myfun, sp)
+%
+[mya,myb,myn,mynn]=deal(0,8,1001,501);
+myfun=@(x) (sin(x.^2).*exp(-x/5));
+[myA,myzeros,myh]=AreaZeros(myfun,mya,myb,myn,mynn);
+myA
+myzeros
+return
 
 function I=simpson(x,y)
 n=size(x,2);
@@ -25,24 +27,21 @@ else
 end
 end
 
-function [A,Z]=AreaZeros(a,b,n,funh,funsp)
+function [A,funz,h]=AreaZeros(funh,a,b,n,nn)
+funsp=@(X, Y) (X(sign(Y(1:end-1)) ~= sign(Y(2:end))));
 x=linspace(a,b,n);
-figure(1)
+h=figure(1)
 clf
 funct=plot(x,funh(x),'DisplayName','$f(x)=\sin(x^2/2)\cdot\exp(-x/5)$');
 hold on
-plot(x,zeros(size(x)))
 grid on
+plot(x,zeros(size(x)))
 A=simpson(x,funh(x));
 sts=funsp(x,funh(x));
-if sts(end) == x(end)
-    sts=sts(1:end-1); % neccessary due to circshift
-end
-Z=arrayfun(@(z) fzero(funh,z),sts);
-plot(Z,0*Z,'o','markersize',10);
+funz=unique(arrayfun(@(z) fzero(funh,z),[sts b]));
+plot(funz,0*funz,'o','markersize',10);
 
-% This barycenter-algorithm only works well for big n:
-secx=x(find(x==sts(3))+1:find(x==sts(4))+1);
+secx=linspace(funz(3),funz(4),nn);
 [X, Y]=meshgrid(secx,funh(secx)); 
 c(1)=trapz(diag(X),diag(X.*Y))/trapz(diag(X),diag(Y));
 c(2)=trapz(diag(Y),diag(Y.*X))/trapz(diag(Y),diag(X));
