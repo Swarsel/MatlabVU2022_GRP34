@@ -1,7 +1,7 @@
 preamble
 %
 [mya,myb,myn,mynn]=deal(0,8,1001,501);
-myfun=@(x) (sin(x.^2).*exp(-x/5));
+myfun=@(x) (sin((x.^2)./2).*exp(-x./5));
 [myA,myzeros,myh]=AreaZeros(myfun,mya,myb,myn,mynn);
 myA
 myzeros
@@ -13,7 +13,7 @@ s=diff(x);
 check_a=(isnumeric(x) & isnumeric(y));
 check_b=(n==size(y,2));
 % Due to probably computing errors, the step size is never exactly equal
-check_c=range(s)<=10^(-14); 
+check_c=range(s)<=10^(-14);
 if (check_a & check_b) & check_c
     if mod(n,2) % Check for odd gridpoints
         s_vec=[1 repmat([2 4], 1, (n-3)/2) 2 1];
@@ -39,20 +39,18 @@ plot(x,zeros(size(x)))
 A=simpson(x,funh(x)); % Area calculation
 sts=funsp(x,funh(x)); % starting points
 funz=unique(arrayfun(@(z) fzero(funh,z),[sts b])); % calculate zeros
-plot(funz,0*funz,'o','markersize',10); % plot zeros
+zero = plot(funz,0*funz,'o','markersize',10,'DisplayName','$Zeros$'); % plot zeros
 
-secx=linspace(funz(3),funz(4),nn); % grid for barycenter-area
-[X, Y]=meshgrid(secx,funh(secx)); % create meshgrid
-% create triangular matrices, integrate, obtain cumulative area arrays:
-[cax, cay] = deal(trapz(secx, triu(Y), 1), trapz(funh(secx), tril(X)', 1));
-c(1) = sum(secx.*[cax(1) diff(cax)])/cax(end); % calculate x...
-c(2) = sum(funh(secx).*[cay(1) diff(cay)])/cay(end); % and y coordinate
+secx = linspace(funz(3),funz(4),nn); % grid for barycenter-area
+sa = simpson(secx, funh(secx)); % Barycenter area
+c(1) = simpson(secx, secx.*funh(secx))/sa; % integrals simplify to these
+c(2) = simpson(secx, funh(secx).^2./2)/sa;
 blabel=['$Barycenter: ($' num2str(c) '$)$']; % plot everything...
 bary=plot(c(1),c(2),'x','markersize',10,'DisplayName',blabel);
 fill(secx,funh(secx),'cyan','FaceAlpha',0.3)
 xlabel('$x$')
 ylabel('$y$')
 title('$Zeros,\ Area\ and\ Barycenter$')
-legend([funct bary])
+legend([funct bary zero])
 hold off
 end
