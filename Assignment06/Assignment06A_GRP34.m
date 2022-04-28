@@ -74,8 +74,7 @@ end
 
 for i=1:length(struct)
     for j=1:length(query)
-        content=struct(i).(query{j});
-        if contains(lower(content),lower(key))
+        if contains(lower(struct(i).(query{j})),lower(key))
             result = [result, i];
         end
     end
