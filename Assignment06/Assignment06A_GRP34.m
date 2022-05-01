@@ -74,7 +74,7 @@ end
 
 for i=1:length(struct)
     for j=1:length(query)
-        if contains(lower(struct(i).(query{j})),lower(key))
+        if contains(lower(struct(i).(query{j})),lower(key)) && ~any(result(:) == i)
             result = [result, i];
         end
     end
