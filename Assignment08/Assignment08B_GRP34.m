@@ -1,6 +1,5 @@
-preamble
-syms a b c d
-syms N(t) P(t)
+preamble;
+syms a b c d; syms N(t) P(t);
 [a,b,c,d] = deal(11.5,3.8,4.1,1.2);
 
 eq1=diff(N)==a*N(t)-b*N(t)*P(t);
@@ -50,7 +49,6 @@ for k=1:length(t)
     set(ht,'string',['$t=',num2str(t(k)),'$'])
     pause(0.05)
     set(hp,'visible','off')
-    %drawnow
 end
 hp=plot(N(k),P(k),'bd','markersize',6);
 xlabel('$N(t)$')
